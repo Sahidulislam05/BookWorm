@@ -19,7 +19,7 @@ export default function BookCard({
   reason = "",
 }: BookCardProps) {
   return (
-    <Link href={`/book/${book._id}`}>
+    <Link href={`/books/${book._id}`}>
       <Card className="group hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden h-full">
         {/* Cover Image */}
         <div className="relative h-72 overflow-hidden bg-gray-100">

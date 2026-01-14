@@ -28,7 +28,7 @@ import Footer from "@/components/shared/Footer";
 
 export default function BookDetailsPage() {
   const params = useParams();
-  console.log("Book ID:", params.id);
+
   const [book, setBook] = useState<Book | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [userBook, setUserBook] = useState<UserBook | null>(null);

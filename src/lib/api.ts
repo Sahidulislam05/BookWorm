@@ -11,7 +11,11 @@ const api = axios.create({
 // Request interceptor to add token
 api.interceptors.request.use(
   (config) => {
-    const token = Cookies.get("token") || localStorage.getItem("token");
+    // Only access localStorage in browser
+    let token = Cookies.get("token");
+    if (!token && typeof window !== "undefined") {
+      token = localStorage.getItem("token") || undefined;
+    }
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -29,15 +33,14 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       // Token expired or invalid
       Cookies.remove("token");
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
 
-      // Redirect to login if not already there
-      if (
-        typeof window !== "undefined" &&
-        !window.location.pathname.includes("/login")
-      ) {
-        window.location.href = "/login";
+        // Redirect to login if not already there
+        if (!window.location.pathname.includes("/login")) {
+          window.location.href = "/login";
+        }
       }
     }
     return Promise.reject(error);

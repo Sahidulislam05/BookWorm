@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import api from "@/lib/api";
 import { Star, BookOpen, Calendar, Hash, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -22,17 +22,18 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Book, Review, UserBook } from "@/types";
 import { formatDate, getInitials } from "@/lib/utils";
 import toast from "react-hot-toast";
-import ProtectedRoute from "@/components/route/ProtectedRoute";
 import Navbar from "@/components/shared/Navbar";
 import Footer from "@/components/shared/Footer";
 
 export default function BookDetailsPage() {
   const params = useParams();
+  const router = useRouter();
 
   const [book, setBook] = useState<Book | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [userBook, setUserBook] = useState<UserBook | null>(null);
   const [loading, setLoading] = useState(true);
+  const [unauthorized, setUnauthorized] = useState(false);
 
   // Add to shelf form
   const [selectedShelf, setSelectedShelf] = useState("");
@@ -54,9 +55,13 @@ export default function BookDetailsPage() {
     try {
       const { data } = await api.get(`/books/${params.id}`);
       setBook(data.book);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching book:", error);
-      toast.error("Failed to load book details");
+      if (error.response?.status === 401) {
+        setUnauthorized(true);
+      } else {
+        toast.error("Failed to load book details");
+      }
     } finally {
       setLoading(false);
     }
@@ -149,35 +154,43 @@ export default function BookDetailsPage() {
 
   if (loading) {
     return (
-      <ProtectedRoute>
-        <div className="min-h-screen flex flex-col">
-          <Navbar />
-          <div className="flex-1 flex items-center justify-center">
-            <Loader2 className="w-12 h-12 text-primary animate-spin" />
-          </div>
-          <Footer />
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <div className="flex-1 flex items-center justify-center">
+          <Loader2 className="w-12 h-12 text-primary animate-spin" />
         </div>
-      </ProtectedRoute>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (unauthorized) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <div className="flex-1 flex flex-col items-center justify-center gap-4">
+          <p className="text-gray-500 text-lg">Please log in to view this page</p>
+          <Button onClick={() => router.push("/login")}>Go to Login</Button>
+        </div>
+        <Footer />
+      </div>
     );
   }
 
   if (!book) {
     return (
-      <ProtectedRoute>
-        <div className="min-h-screen flex flex-col">
-          <Navbar />
-          <div className="flex-1 flex items-center justify-center">
-            <p className="text-gray-500">Book not found</p>
-          </div>
-          <Footer />
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <div className="flex-1 flex items-center justify-center">
+          <p className="text-gray-500">Book not found</p>
         </div>
-      </ProtectedRoute>
+        <Footer />
+      </div>
     );
   }
 
   return (
-    <ProtectedRoute>
-      <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col">
         <Navbar />
 
         <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
@@ -444,6 +457,6 @@ export default function BookDetailsPage() {
 
         <Footer />
       </div>
-    </ProtectedRoute>
-  );
+    );
+  }
 }

@@ -27,8 +27,11 @@ import toast from "react-hot-toast";
 import ProtectedRoute from "@/components/route/ProtectedRoute";
 import Navbar from "@/components/shared/Navbar";
 import Footer from "@/components/shared/Footer";
+import { useAuth } from "@/context/AuthContext";
 
 export default function AdminUsersPage() {
+  const { user: currentUser } = useAuth();
+
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -143,62 +146,72 @@ export default function AdminUsersPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {users.map((user, index) => (
-                      <TableRow key={index}>
-                        <TableCell>
-                          <div className="flex items-center gap-3">
-                            <Avatar>
-                              <AvatarImage src={user.photo} alt={user.name} />
-                              <AvatarFallback>
-                                {getInitials(user.name)}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <p className="font-semibold">{user.name}</p>
+                    {users.map((user, index) => {
+                      const isSelf = currentUser?._id === user._id;
+
+                      return (
+                        <TableRow key={index}>
+                          <TableCell>
+                            <div className="flex items-center gap-3">
+                              <Avatar>
+                                <AvatarImage src={user.photo} alt={user.name} />
+                                <AvatarFallback>
+                                  {getInitials(user.name)}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div>
+                                <p className="font-semibold">{user.name}</p>
+                              </div>
                             </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>{user.email}</TableCell>
-                        <TableCell>
-                          <Badge
-                            variant={
-                              user.role === "admin" ? "default" : "secondary"
-                            }
-                          >
-                            {user.role === "admin" ? (
-                              <span className="flex items-center gap-1">
-                                <Shield className="w-3 h-3" />
-                                Admin
-                              </span>
-                            ) : (
-                              <span className="flex items-center gap-1">
-                                <UserIcon className="w-3 h-3" />
-                                User
-                              </span>
+                          </TableCell>
+                          <TableCell>{user.email}</TableCell>
+                          <TableCell>
+                            <Badge
+                              variant={
+                                user.role === "admin" ? "default" : "secondary"
+                              }
+                            >
+                              {user.role === "admin" ? (
+                                <span className="flex items-center gap-1">
+                                  <Shield className="w-3 h-3" />
+                                  Admin
+                                </span>
+                              ) : (
+                                <span className="flex items-center gap-1">
+                                  <UserIcon className="w-3 h-3" />
+                                  User
+                                </span>
+                              )}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-gray-600">
+                            {formatDate(user.createdAt)}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <Select
+                              value={user.role}
+                              disabled={isSelf}
+                              onValueChange={(value: "user" | "admin") =>
+                                handleRoleChange(user._id, value)
+                              }
+                            >
+                              <SelectTrigger className="w-32">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="user">User</SelectItem>
+                                <SelectItem value="admin">Admin</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            {isSelf && (
+                              <p className="text-xs text-gray-500 mt-1">
+                                You cannot change your own role
+                              </p>
                             )}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-gray-600">
-                          {formatDate(user.createdAt)}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <Select
-                            value={user.role}
-                            onValueChange={(value: "user" | "admin") =>
-                              handleRoleChange(user._id, value)
-                            }
-                          >
-                            <SelectTrigger className="w-32">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="user">User</SelectItem>
-                              <SelectItem value="admin">Admin</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                 </Table>
               )}

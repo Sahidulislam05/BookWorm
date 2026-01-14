@@ -257,10 +257,12 @@ export default function AdminDashboardPage() {
                           <span className="text-2xl font-bold text-gray-300">
                             #{index + 1}
                           </span>
-                          <img
+                          <Image
                             src={book.coverImage}
                             alt={book.title}
-                            className="w-12 h-16 object-cover rounded"
+                            width={40}
+                            height={60}
+                            className="object-cover rounded"
                           />
                           <div className="flex-1">
                             <p className="font-semibold">{book.title}</p>
@@ -298,8 +300,8 @@ export default function AdminDashboardPage() {
                           <Image
                             src={user.photo}
                             alt={user.name}
-                            width={10}
-                            height={10}
+                            width={20}
+                            height={20}
                             className="rounded-full"
                           />
                           <div className="flex-1">

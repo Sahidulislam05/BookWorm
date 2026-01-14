@@ -30,6 +30,7 @@ import Link from "next/link";
 import ProtectedRoute from "@/components/route/ProtectedRoute";
 import Navbar from "@/components/shared/Navbar";
 import Footer from "@/components/shared/Footer";
+import Image from "next/image";
 
 ChartJS.register(
   CategoryScale,
@@ -289,15 +290,17 @@ export default function AdminDashboardPage() {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-3">
-                      {stats.recentUsers.map((user) => (
+                      {stats.recentUsers.map((user, index) => (
                         <div
-                          key={user.id}
+                          key={index}
                           className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
                         >
-                          <img
+                          <Image
                             src={user.photo}
                             alt={user.name}
-                            className="w-10 h-10 rounded-full"
+                            width={10}
+                            height={10}
+                            className="rounded-full"
                           />
                           <div className="flex-1">
                             <p className="font-semibold">{user.name}</p>

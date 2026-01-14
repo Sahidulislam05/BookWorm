@@ -143,8 +143,8 @@ export default function AdminUsersPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {users.map((user) => (
-                      <TableRow key={user.id}>
+                    {users.map((user, index) => (
+                      <TableRow key={index}>
                         <TableCell>
                           <div className="flex items-center gap-3">
                             <Avatar>

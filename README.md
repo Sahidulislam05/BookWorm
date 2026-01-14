@@ -225,7 +225,7 @@ This project is licensed under the MIT License.
 
 ## 👨‍💻 Author
 
-Sahidul Islam
+**Sahidul Islam**
 
 ## 🙏 Acknowledgments
 

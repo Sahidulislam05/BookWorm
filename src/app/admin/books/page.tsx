@@ -158,18 +158,7 @@ export default function AdminBooksPage() {
     setImagePreview(book.coverImage);
     setShowModal(true);
   };
-
-  // const handleDelete = async (id: string) => {
-  //   if (!confirm("Are you sure you want to delete this book?")) return;
-
-  //   try {
-  //     await api.delete(`/books/${id}`);
-  //     toast.success("Book deleted successfully!");
-  //     fetchBooks();
-  //   } catch (error: any) {
-  //     toast.error(error.response?.data?.message || "Failed to delete book");
-  //   }
-  // };
+  
 
   const handleDelete = async (id: string) => {
     const result = await Swal.fire({

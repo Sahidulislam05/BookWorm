@@ -185,7 +185,7 @@ export default function AdminUsersPage() {
                           <Select
                             value={user.role}
                             onValueChange={(value: "user" | "admin") =>
-                              handleRoleChange(user.id, value)
+                              handleRoleChange(user._id, value)
                             }
                           >
                             <SelectTrigger className="w-32">

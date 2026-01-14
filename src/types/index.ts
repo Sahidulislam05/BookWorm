@@ -1,5 +1,6 @@
 export interface User {
   id: string;
+  _id: string;
   name: string;
   email: string;
   photo: string;
@@ -19,7 +20,6 @@ export interface Genre {
   description?: string;
   slug: string;
   createdAt: string;
-  
 }
 
 export interface Book {

@@ -28,6 +28,7 @@ import toast from "react-hot-toast";
 import ProtectedRoute from "@/components/route/ProtectedRoute";
 import Navbar from "@/components/shared/Navbar";
 import Footer from "@/components/shared/Footer";
+import Swal from "sweetalert2";
 
 export default function AdminTutorialsPage() {
   const [tutorials, setTutorials] = useState<Tutorial[]>([]);
@@ -99,12 +100,23 @@ export default function AdminTutorialsPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this tutorial?")) return;
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "This tutorial will be permanently deleted!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#dc2626",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: "Yes, delete it",
+      cancelButtonText: "Cancel",
+    });
+
+    if (!result.isConfirmed) return;
 
     try {
       await api.delete(`/tutorials/${id}`);
       toast.success("Tutorial deleted successfully!");
-      fetchTutorials();
+      fetchTutorials(); // refresh list
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Failed to delete tutorial");
     }
